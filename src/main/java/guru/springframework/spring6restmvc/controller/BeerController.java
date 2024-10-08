@@ -17,6 +17,28 @@ import java.util.UUID;
 public class BeerController {
     private final BeerService beerService;
 
+    @PatchMapping("{beerId}")
+    public ResponseEntity patchById(@PathVariable("beerId")  UUID beerId, @RequestBody Beer beer){
+        beerService.patchBeerById(beerId,beer);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("{beerId}")
+    public ResponseEntity DeleteById(@PathVariable(("beerId")) UUID beerId){
+
+        beerService.deleteById(beerId);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT );
+    }
+
+    @PutMapping("{beerId}")
+    public ResponseEntity updateById(@PathVariable("beerId")  UUID beerId, @RequestBody Beer beer){
+        beerService.updateBeerById(beerId,beer);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location","/api/v1/beer/"+beer.getId());
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
     @PostMapping
     public ResponseEntity handlePost(@RequestBody Beer beer){
          Beer savedBeer = beerService.saveNewBeer(beer);
@@ -32,7 +54,7 @@ public class BeerController {
 
 
     @RequestMapping(value = "/{beerId}",method = RequestMethod.GET)
-    public Beer getBeerByID(@PathVariable  UUID beerId){
+    public Beer getBeerByID(@PathVariable("beerId")  UUID beerId){
         System.out.println(beerId);
         log.debug("get Beer id controller was called");
         return beerService.getById(beerId);
