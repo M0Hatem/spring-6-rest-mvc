@@ -10,11 +10,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class BeerControllerTest {
+
     @Autowired
     BeerController beerController;
 
     @Test
-    void getBeerByID() {
-        System.out.println(beerController.getBeerByID(UUID.randomUUID() ));
+    void getBeerById() {
+
+        System.out.println(beerController.getBeerById(UUID.randomUUID()));
+
     }
 }
