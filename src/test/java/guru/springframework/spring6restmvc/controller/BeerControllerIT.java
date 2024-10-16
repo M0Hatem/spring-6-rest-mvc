@@ -12,12 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
@@ -31,6 +30,38 @@ class BeerControllerIT {
     @Autowired
     BeerMapper beerMapper;
 
+    @Test
+    void testDeleteByIdNotFound() {
+        assertThrows(NotFoundException.class,()->{
+            beerController.deleteById(UUID.randomUUID());
+        });
+    }
+
+    @Rollback
+    @Transactional
+    @Test
+    void deleteByIdFound() {
+        Beer beer = beerRepository.findAll().getFirst();
+
+        ResponseEntity responseEntity = beerController.deleteById(beer.getId());
+
+        assertThat(beerRepository.findById(beer.getId())).isEmpty();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+
+        assertThrows(NoSuchElementException.class,()->{
+            beerRepository.findById(beer.getId()).get();
+        });
+    }
+
+    @Test
+    void testUpdateNotFound() {
+        assertThrows(NotFoundException.class,()->{
+            beerController.updateById(UUID.randomUUID(),BeerDTO.builder().build());
+        });
+    }
+
+    @Rollback
+    @Transactional
     @Test
     void testUpdateExistingBeer() {
         Beer beer = beerRepository.findAll().getFirst();
