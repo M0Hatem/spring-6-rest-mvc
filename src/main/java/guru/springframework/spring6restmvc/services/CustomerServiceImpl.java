@@ -56,18 +56,20 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void deleteCustomerById(UUID customerId) {
+    public Boolean deleteCustomerById(UUID customerId) {
         customerMap.remove(customerId);
+        return true;
     }
 
     @Override
-    public void updateCustomerById(UUID customerId, CustomerDTO customer) {
+    public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
         CustomerDTO existing = customerMap.get(customerId);
         existing.setName(customer.getName());
+        return Optional.of(existing);
     }
 
     @Override
-    public CustomerDTO saveNewCustomer(CustomerDTO customer) {
+    public Optional<CustomerDTO> saveNewCustomer(CustomerDTO customer) {
 
         CustomerDTO savedCustomer = CustomerDTO.builder()
                 .id(UUID.randomUUID())
@@ -79,7 +81,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerMap.put(savedCustomer.getId(), savedCustomer);
 
-        return savedCustomer;
+        return Optional.of(savedCustomer);
     }
 
     @Override
