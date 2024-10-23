@@ -1,3 +1,5 @@
+drop table if exists beer;
+
 create table beer
 (
     id               varchar(36)    not null,
@@ -11,8 +13,6 @@ create table beer
     version          integer,
     primary key (id)
 ) engine = InnoDB;
-
-drop table if exists beer;
 
 drop table if exists customer;
 
